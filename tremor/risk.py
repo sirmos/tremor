@@ -1,11 +1,22 @@
 CRITICALITY_WEIGHTS = {"tier1": 40, "tier2": 20, "tier3": 5}
-TYPE_WEIGHTS = {"Dashboard": 30, "Dataset": 10}
+BI_PLATFORM_WEIGHTS = {"powerbi": 35, "tableau": 35, "looker": 35}
+
+
+def _platform_from_urn(urn):
+    if not urn:
+        return None
+    for platform in BI_PLATFORM_WEIGHTS:
+        if f"dataPlatform:{platform}" in urn:
+            return platform
+    return None
 
 
 def score_asset(entity):
-    score = 0
-    entity_type = entity.get("type", "Dataset")
-    score += TYPE_WEIGHTS.get(entity_type, 10)
+    score = 10  # baseline for any downstream dependency
+
+    platform = _platform_from_urn(entity.get("urn"))
+    if platform:
+        score += BI_PLATFORM_WEIGHTS[platform]  # user-facing BI surfaces hurt more when they break
 
     tags = entity.get("tags", {}).get("tags", []) if entity.get("tags") else []
     for tag_wrapper in tags:

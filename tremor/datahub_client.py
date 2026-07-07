@@ -29,19 +29,22 @@ class DataHubClient:
             urn
             name
             lineage(input: { direction: DOWNSTREAM }) {
-              entities {
-                urn
+              relationships {
                 type
-                ... on Dataset {
-                  name
-                  ownership { owners { owner { ... on CorpUser { username } } } }
-                  tags { tags { tag { name } } }
-                  health { status }
-                }
-                ... on Dashboard {
-                  dashboardId
-                  tool
-                  ownership { owners { owner { ... on CorpUser { username } } } }
+                entity {
+                  urn
+                  type
+                  ... on Dataset {
+                    name
+                    ownership { owners { owner { ... on CorpUser { username } } } }
+                    tags { tags { tag { name } } }
+                    health { status }
+                  }
+                  ... on Dashboard {
+                    dashboardId
+                    tool
+                    ownership { owners { owner { ... on CorpUser { username } } } }
+                  }
                 }
               }
             }
@@ -52,7 +55,8 @@ class DataHubClient:
         dataset = result.get("dataset")
         if not dataset:
             return []
-        return dataset.get("lineage", {}).get("entities", [])
+        relationships = dataset.get("lineage", {}).get("relationships", [])
+        return [r["entity"] for r in relationships if r.get("entity")]
 
     def write_risk_review(self, urn, pr_url, risk_score, summary):
         mutation = """

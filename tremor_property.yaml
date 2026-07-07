@@ -1,0 +1,8 @@
+- id: io.tremor.riskReview
+  type: string
+  cardinality: MULTIPLE
+  display_name: Tremor Risk Review
+  description: Records the most recent Tremor PR risk assessment for this asset, the PR link, risk score, and a short summary, so the next person or agent looking at this table inherits the history instead of starting from zero.
+  entity_types:
+    - dataset
+    - dashboard
