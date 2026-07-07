@@ -1,0 +1,3 @@
+{
+  "models/order_details.sql": "urn:li:dataset:(urn:li:dataPlatform:snowflake,b2fd91.order_entry_db.analytics.order_details,PROD)"
+}

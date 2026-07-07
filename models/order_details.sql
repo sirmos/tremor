@@ -1,0 +1,1 @@
+-- placeholder dbt model representing order_details
