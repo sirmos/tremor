@@ -1,0 +1,39 @@
+name: "Tremor"
+description: "Risk-aware downstream impact review for PRs, powered by DataHub lineage"
+inputs:
+  datahub-server:
+    description: "DataHub GMS server URL"
+    required: true
+  datahub-token:
+    description: "DataHub personal access token"
+    required: true
+  github-token:
+    description: "GitHub token for posting PR comments"
+    required: true
+  risk-threshold:
+    description: "Minimum risk score (0-100) required to surface an asset"
+    required: false
+    default: "40"
+  manifest-path:
+    description: "Path to a JSON file mapping repo file paths to DataHub URNs"
+    required: false
+    default: "tremor.manifest.json"
+runs:
+  using: "composite"
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.11"
+    - name: Install dependencies
+      shell: bash
+      run: pip install -r ${{ github.action_path }}/requirements.txt
+    - name: Run Tremor
+      shell: bash
+      env:
+        DATAHUB_SERVER: ${{ inputs.datahub-server }}
+        DATAHUB_TOKEN: ${{ inputs.datahub-token }}
+        GITHUB_TOKEN: ${{ inputs.github-token }}
+        RISK_THRESHOLD: ${{ inputs.risk-threshold }}
+        MANIFEST_PATH: ${{ inputs.manifest-path }}
+      run: python -m tremor.main
