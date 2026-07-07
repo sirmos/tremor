@@ -60,20 +60,26 @@ class DataHubClient:
 
     def write_risk_review(self, urn, pr_url, risk_score, summary):
         mutation = """
-        mutation UpsertStructuredProperty($input: UpsertStructuredPropertyValueInput!) {
-          upsertStructuredProperty(input: $input) {
-            urn
+        mutation UpsertStructuredProperties($input: UpsertStructuredPropertiesInput!) {
+          upsertStructuredProperties(input: $input) {
+            properties {
+              structuredProperty {
+                urn
+              }
+            }
           }
         }
         """
         variables = {
             "input": {
                 "assetUrn": urn,
-                "structuredPropertyUrn": "urn:li:structuredProperty:tremorRiskReview",
-                "values": [
-                    {"stringValue": pr_url},
-                    {"numberValue": risk_score},
-                    {"stringValue": summary},
+                "structuredPropertyInputParams": [
+                    {
+                        "structuredPropertyUrn": "urn:li:structuredProperty:io.tremor.riskReview",
+                        "values": [
+                            {"stringValue": f"{pr_url} | risk {risk_score} | {summary}"}
+                        ],
+                    }
                 ],
             }
         }
