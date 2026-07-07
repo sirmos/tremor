@@ -54,7 +54,7 @@ pip install -r requirements.txt
 export DATAHUB_SERVER="http://localhost:8080"
 export DATAHUB_TOKEN="your-token"
 export RISK_THRESHOLD="40"
-python3 -m setup.test_run
+PYTHONPATH=. python3 setup/test_run.py
 ```
 
 ## What Tremor is not
